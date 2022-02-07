@@ -28,6 +28,11 @@ void AMovingPlatform::BeginPlay()
 
 		SimpleTimer = FTimerHandle();
 		GetWorldTimerManager().SetTimer(SimpleTimer, this, &AMovingPlatform::EndReached, TravelTime + StopTime, true);
+
+		if (ActiveTriggers <= 0) 
+		{
+			GetWorldTimerManager().PauseTimer(SimpleTimer);
+		}
 	}
 
 	/*CanEverTick = true;
@@ -62,4 +67,24 @@ void AMovingPlatform::EndReached()
 
 	//SimpleTimer = FTimerHandle();
 	//GetWorldTimerManager().SetTimer(SimpleTimer, this, &AMovingPlatform::EndReached, TravelTime, false, StopTime);
+}
+
+void AMovingPlatform::AddActiveTrigger() 
+{
+	ActiveTriggers += 1;
+
+	if (ActiveTriggers > 0 && GetWorldTimerManager().IsTimerPaused(SimpleTimer))
+	{
+		GetWorldTimerManager().UnPauseTimer(SimpleTimer);
+	}
+}
+
+void AMovingPlatform::RemoveActiveTrigger() 
+{
+	ActiveTriggers -= 1;
+
+	if (ActiveTriggers <= 0 && !GetWorldTimerManager().IsTimerPaused(SimpleTimer))
+	{
+		GetWorldTimerManager().PauseTimer(SimpleTimer);
+	}
 }

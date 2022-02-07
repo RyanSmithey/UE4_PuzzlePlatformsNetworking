@@ -25,6 +25,14 @@ public:
 
 
 private:
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	class UBoxComponent* ColliderToMovePlatform = nullptr;
+
+	UPROPERTY(EditAnywhere) TArray<class AMovingPlatform*> EffectedPlatforms;
+
+	UFUNCTION()
+	void ActivatePlatform(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
+	UFUNCTION()
+	void DisablePlatform(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 };
