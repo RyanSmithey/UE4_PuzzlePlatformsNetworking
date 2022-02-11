@@ -14,7 +14,6 @@ UPuzzlePlatformsGameInstance::UPuzzlePlatformsGameInstance(const FObjectInitiali
 	static ConstructorHelpers::FClassFinder<UUserWidget> MenuBPClass(TEXT("/Game/MenuSystem/WBP_MainMenu"));
 	if (!ensure(MenuBPClass.Class != nullptr)) return;
 
-
 	MenuClass = MenuBPClass.Class;
 }
 
@@ -25,36 +24,34 @@ void UPuzzlePlatformsGameInstance::Host()
 	UWorld* TheWorld = GetWorld();
 	if (!ensure(TheWorld != nullptr)) return;
 
+
 	TheWorld->ServerTravel("/Game/Maps/ThirdPersonExampleMap?listen");
+	
+	
+	if (MenuClassInstance == nullptr) return;
+	MenuClassInstance->Teardown();
 }
 
 void UPuzzlePlatformsGameInstance::Join(const FString& Address)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, FString::Printf((TEXT("Attempting To Join Server: %s")), *Address));
 
+
 	APlayerController* Controller = GetFirstLocalPlayerController();
 
 	Controller->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
+	
+	if (MenuClassInstance == nullptr) return;
+	MenuClassInstance->Teardown();
 }
 
 void UPuzzlePlatformsGameInstance::LoadMenu()
 {
-	UMainMenu* MenuClassInstance = CreateWidget<UMainMenu>(this, MenuClass);
+	MenuClassInstance = CreateWidget<UMainMenu>(this, MenuClass);
 
 	if (!ensure(MenuClassInstance != nullptr)) return;
+	
 	MenuClassInstance->SetMenuInterface(this);
-	MenuClassInstance->bIsFocusable = true;
-	MenuClassInstance->AddToViewport();
 
-	APlayerController* Controller = GetFirstLocalPlayerController();
-	if (!ensure(Controller != nullptr)) return;
-
-	FInputModeUIOnly InputData;
-
-	InputData.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
-	InputData.SetWidgetToFocus(MenuClassInstance->TakeWidget());
-
-	Controller->SetInputMode(InputData);
-
-	Controller->bShowMouseCursor = true;
+	MenuClassInstance->Setup();
 }

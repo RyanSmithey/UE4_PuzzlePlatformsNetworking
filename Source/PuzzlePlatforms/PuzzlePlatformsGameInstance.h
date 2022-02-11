@@ -19,7 +19,7 @@ class PUZZLEPLATFORMS_API UPuzzlePlatformsGameInstance : public UGameInstance, p
 
 public:
 	UPuzzlePlatformsGameInstance(const FObjectInitializer& ObjectInitializer);
-	
+
 	UFUNCTION(Exec, BlueprintCallable)
 		void LoadMenu();
 
@@ -30,4 +30,7 @@ public:
 
 	UPROPERTY()
 		TSubclassOf<class UMainMenu> MenuClass;
+
+	UPROPERTY()
+		UMainMenu* MenuClassInstance;
 };
