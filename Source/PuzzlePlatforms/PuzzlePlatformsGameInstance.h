@@ -25,10 +25,10 @@ public:
 
 	UFUNCTION(Exec, BlueprintCallable) void LoadMenuWidget();
 
-	UFUNCTION(Exec) virtual void Host() override;
+	UFUNCTION(Exec) virtual void Host(const FString& ServerName) override;
 	UFUNCTION(Exec) virtual void JoinAddress(const FString& Address) override;
 	UFUNCTION(Exec) virtual void JoinIndex(uint32& Index) override;
-	UFUNCTION(Exec) void TEST();
+	UFUNCTION() void OnNetworkFailure(UWorld* World, UNetDriver* NetDriver, ENetworkFailure::Type FailureType, const FString& ErrorString);
 
 	UFUNCTION()		void OnCreateSessionComplete(FName SessionName, bool Success);
 	UFUNCTION()		void OnDestroySessionComplete(FName SessionName, bool Success);
@@ -44,6 +44,7 @@ public:
 
 	UPROPERTY() UMainMenu* MenuClassInstance;
 
+	FString PersonalSessionName;
 	TSharedPtr<class FOnlineSessionSearch> SessionSearch;
 	IOnlineSessionPtr Session;
 };
